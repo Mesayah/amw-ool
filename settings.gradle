@@ -1,0 +1,3 @@
+rootProject.name = 'amw-ool'
+
+include ':project1'
