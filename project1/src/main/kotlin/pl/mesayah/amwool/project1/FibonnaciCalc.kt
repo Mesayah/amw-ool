@@ -1,6 +1,6 @@
-package pl.mesayah.project1
+package pl.mesayah.amwool.project1
 
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.*
 import kotlin.system.measureNanoTime
 
 object FibonnaciCalc {
@@ -13,7 +13,7 @@ object FibonnaciCalc {
 
     suspend fun calcAsync(): Long = measureNanoTime {
         val deferred = (1..100).map { n ->
-            async {
+            GlobalScope.async {
                 if (n == 1) return@async 1
                 else return@async (n - 1) + (n - 2)
             }

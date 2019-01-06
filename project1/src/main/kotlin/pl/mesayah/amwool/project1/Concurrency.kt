@@ -1,11 +1,12 @@
-package pl.mesayah.project1
+package pl.mesayah.amwool.project1
 
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 fun main(args: Array<String>) {
 
     println("I will download 10 paragraphs of Lorem Ipsum text from a public API.")
-    launch {
+    GlobalScope.launch {
         val timeSync = LoremIpsumDownloader.downloadSync()
         val timeAsync = LoremIpsumDownloader.downloadAsync()
 
@@ -18,7 +19,7 @@ fun main(args: Array<String>) {
     readLine()
 
     println("\nI will calculate 15 first elements of Fibonacci sequence.")
-    launch {
+    GlobalScope.launch {
         val timeSync = FibonnaciCalc.calcSync()
         val timeAsync = FibonnaciCalc.calcAsync()
 

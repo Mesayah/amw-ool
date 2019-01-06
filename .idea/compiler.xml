@@ -2,8 +2,16 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="amw-ool.project1 -project2_main" target="1.8" />
+      <module name="amw-ool.project1 -project2_test" target="1.8" />
       <module name="amw-ool_main" target="1.8" />
       <module name="amw-ool_test" target="1.8" />
+      <module name="project1__main" target="1.8" />
+      <module name="project1__test" target="1.8" />
+      <module name="project2_main" target="1.8" />
+      <module name="project2_test" target="1.8" />
+      <module name="project__main" target="1.8" />
+      <module name="project__test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
