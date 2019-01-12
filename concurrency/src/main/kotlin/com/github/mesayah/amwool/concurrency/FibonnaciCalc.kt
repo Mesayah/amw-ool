@@ -1,6 +1,7 @@
-package pl.mesayah.amwool.concurrency
+package com.github.mesayah.amwool.concurrency
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlin.system.measureNanoTime
 
 object FibonnaciCalc {

@@ -1,4 +1,4 @@
-package pl.mesayah.amwool.concurrency
+package com.github.mesayah.amwool.concurrency
 
 import com.github.kittinunf.fuel.httpGet
 import kotlinx.coroutines.GlobalScope

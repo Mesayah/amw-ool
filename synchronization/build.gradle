@@ -1,2 +1,10 @@
 group 'pl.mesayah.amw-ool'
 version '0.0.1'
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.github.mesayah.amwool.synchronization.SynchronizationKt'
+    }
+
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}

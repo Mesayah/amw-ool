@@ -1,4 +1,4 @@
-package pl.mesayah.amwool.webscraping
+package com.github.mesayah.amwool.synchronization
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope

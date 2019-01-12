@@ -1,4 +1,4 @@
-package pl.mesayah.amwool.webscraping
+package com.github.mesayah.amwool.webscraping
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element

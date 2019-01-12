@@ -6,3 +6,11 @@ dependencies {
     compile 'com.github.kittinunf.fuel:fuel-jackson:1.15.0'
     compile 'com.github.kittinunf.fuel:fuel-coroutines:1.15.0'
 }
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.github.mesayah.amwool.concurrency.ConcurrencyKt'
+    }
+    
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
