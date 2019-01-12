@@ -50,6 +50,4 @@ fun main() = runBlocking {
         counter++
     }
     println("Not Synchronized Counter = $counter")
-
-    println("Conclusion: not synchronized counter should never equals ${N * K} on multicore processors.")
 }

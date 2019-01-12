@@ -14,6 +14,8 @@ uruchamiania wątku jest większy niż zysk z przetwarzania współbieżnego dan
 
 ## Synchronizacja
     java -jar synchronization/build/libs/synchronization-0.0.1.jar
+Po wykonaniu bez synchronizacji licznik (`counter`) nigdy nie pownien wynosić 10000 (oczekiwana wartość) na procesorze 
+z wieloma rdzeniami.
 
 ## WebScraping
 Program pobiera treść ze strony Wikipedii o wskazanym haśle.
