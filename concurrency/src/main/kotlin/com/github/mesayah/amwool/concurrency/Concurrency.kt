@@ -1,4 +1,4 @@
-package pl.mesayah.amwool.project1
+package pl.mesayah.amwool.concurrency
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
