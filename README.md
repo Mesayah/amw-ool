@@ -25,3 +25,17 @@ gdzie `<wiki keyword>` jest szukanym hasłem, np.
 
     java -jar webscraping/build/libs/webscraping-0.0.1.jar Polska
 wyszuka strone o tytule "Polska" i wyświetli jej treść.
+
+## Messaging
+Program wykorzystuje RabbitMQ do asynchronicznego przesyłania wiadomośći.
+Składa się z dwóch małych aplikacji: Consumera oraz Publishera.
+Do poprawnego działania wymaga instancji RabbitMQ, którą można uruchomić np. w kontenerze Dockera.
+
+    Snippety wkrótce...
+    
+## Reactive Streams
+Opis wkrótce...
+
+# Machine Learning
+## Klasyfikacja
+Opis wkrótce...
