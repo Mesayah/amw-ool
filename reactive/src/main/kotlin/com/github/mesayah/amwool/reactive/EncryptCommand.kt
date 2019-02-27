@@ -3,10 +3,7 @@ package com.github.mesayah.amwool.reactive
 import reactor.core.publisher.Flux
 import reactor.util.Loggers
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.Paths
 import javax.crypto.Cipher
-import javax.crypto.spec.SecretKeySpec
 
 const val ENCRYPT_COMMAND = "encrypt"
 
@@ -17,9 +14,11 @@ object EncryptCommand : CryptCommand(
 
     private val logger = Loggers.getLogger(EncryptCommand.javaClass)
 
-    private fun encrypt(file: File, secret: String, algorithm: String) = with(Cipher.getInstance(algorithm)) {
-        // TODO()
-    }
+    private fun encrypt(file: File, secret: String, algorithm: String): ByteArray =
+        with(Cipher.getInstance(algorithm)) {
+            // TODO()
+            return ByteArray(0)
+        }
 
     override fun run() {
         Flux.just(Triple(file, secret, algorithm))
@@ -27,12 +26,11 @@ object EncryptCommand : CryptCommand(
             .map { (file, secret, algorithm) -> file to encrypt(file, secret, algorithm) }
             .doOnNext { logger.info("Encrypted file ${file.name} with secret key \"${secret}\".") }
             .map { (originalFile, encryptedBytes) ->
-                val encryptedFile = Files.createFile(Paths.get("${originalFile.path}.Encrypted"))
-                Files.write(Paths.get(encryptedFile.toUri()), encryptedBytes)
+                File(originalFile.path.plus(".encrypted")).apply { writeBytes(encryptedBytes) }
             }
-            .doOnNext { logger.info("Saved file to $it.") }
+            .doOnNext { logger.info("Saved file to ${it.path}.") }
             .subscribe(
-                { println("Encrypted and saved to file ${it.toAbsolutePath()}.") },
+                { println("Encrypted and saved to file ${it.path}.") },
                 { logger.error(it.localizedMessage, it) }
             )
     }

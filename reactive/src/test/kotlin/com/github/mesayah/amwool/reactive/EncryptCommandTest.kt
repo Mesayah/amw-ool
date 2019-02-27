@@ -9,7 +9,7 @@ class EncryptCommandTest {
     fun shouldEncryptedFileExistAfterEncrypting() {
         val file = createTempFile().apply { writeText("TEST") }
 
-        EncryptCommand.main(listOf(ENCRYPT_COMMAND, file.path, "password"))
+        EncryptCommand.main(arrayOf("--secret", "secret", file.path))
 
         assert(Files.exists(Paths.get("${file.path}.encrypted")))
     }
@@ -20,7 +20,7 @@ class EncryptCommandTest {
         val encryptedData = ""
         val file = createTempFile().apply { writeText(data) }
 
-        EncryptCommand.main(listOf("-s", "secret", "-a", "DES/CBC/NoPadding", file.path))
+        EncryptCommand.main(arrayOf("-s", "secret", "-a", "DES/CBC/NoPadding", file.path))
 
         println(String(Files.readAllBytes(Paths.get("${file.path}.encrypted"))))
         assert(String(Files.readAllBytes(Paths.get("${file.path}.encrypted"))) == encryptedData)

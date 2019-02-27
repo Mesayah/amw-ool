@@ -10,7 +10,7 @@ class SelectAttributesTest {
         val mostImportantAttributeIndices = selectMostImportantAttributes(dataInstances)
 
         mostImportantAttributeIndices.forEach {
-            assert(dataInstances.attribute(it) != null)
+            assert(dataInstances.attribute(it.name()) != null)
         }
     }
 }
