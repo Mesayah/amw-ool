@@ -4,22 +4,13 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlin.system.measureNanoTime
 
-object FibonnaciCalc {
-    fun calcSync(): Long = measureNanoTime {
-        (1..100).map { n ->
-            if (n == 1) return@map 1
-            else return@map (n - 1) + (n - 2)
-        }
-    }
-
-    suspend fun calcAsync(): Long = measureNanoTime {
-        val deferred = (1..100).map { n ->
-            GlobalScope.async {
-                if (n == 1) return@async 1
-                else return@async (n - 1) + (n - 2)
-            }
-        }
-
-        deferred.forEach { it.await() }
-    }
+fun fibonacciSync(n: Int): Long {
+    return if (n == 1 || n == 0) n.toLong()
+    else fibonacciSync(n - 1) + fibonacciSync(n - 2)
 }
+
+suspend fun fibonacciAsync(n: Int): Long =
+    GlobalScope.async {
+        if (n == 1 || n == 0) return@async n.toLong()
+        else return@async fibonacciAsync(n - 1) + fibonacciAsync(n - 2)
+    }.await()

@@ -30,6 +30,7 @@ subprojects {
 
         testImplementation(kotlin("test"))
         testImplementation(kotlin("test-junit"))
+        testImplementation("io.mockk:mockk:1.9.1.kotlin12")
     }
 
     val compileKotlin: KotlinCompile by tasks

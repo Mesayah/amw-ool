@@ -10,5 +10,6 @@ dependencies {
 }
 
 application {
-    mainClassName = "com.github.mesayah.amwool.concurrency.ClassificationKt"
+    mainClassName = 
+"com.github.mesayah.amwool.classification.AnimalClassificationKt"
 }
