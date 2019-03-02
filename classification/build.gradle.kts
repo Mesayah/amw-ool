@@ -7,9 +7,9 @@ plugins {
 
 dependencies {
     compile("nz.ac.waikato.cms.weka:weka-stable:3.8.3")
+    compile(project(":ml-common"))
 }
 
 application {
-    mainClassName = 
-"com.github.mesayah.amwool.classification.AnimalClassificationKt"
+    mainClassName = "com.github.mesayah.amwool.classification.AnimalClassificationKt"
 }

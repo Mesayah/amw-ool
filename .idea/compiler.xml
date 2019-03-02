@@ -4,8 +4,14 @@
     <bytecodeTargetLevel>
       <module name="amw-ool.cassification.main" target="1.8" />
       <module name="amw-ool.cassification.test" target="1.8" />
+      <module name="amw-ool.ml-common.main" target="1.8" />
+      <module name="amw-ool.ml-common.test" target="1.8" />
+      <module name="amw-ool.mlcommon.main" target="1.8" />
+      <module name="amw-ool.mlcommon.test" target="1.8" />
       <module name="amw-ool.project1 -project2_main" target="1.8" />
       <module name="amw-ool.project1 -project2_test" target="1.8" />
+      <module name="amw-ool.regression.main" target="1.8" />
+      <module name="amw-ool.regression.test" target="1.8" />
       <module name="amw-ool_main" target="1.8" />
       <module name="amw-ool_test" target="1.8" />
       <module name="concurrency_main" target="1.8" />

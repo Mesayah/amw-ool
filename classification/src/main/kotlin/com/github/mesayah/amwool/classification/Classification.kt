@@ -13,9 +13,9 @@ import weka.core.SerializationHelper
 import java.io.File
 import java.io.IOException
 
-object Classification : CliktCommand(name = "learn", help = "Use training data set to teach program") {
+object Classification : CliktCommand(name = "regress", help = "Provide data to regress it") {
 
-    private val modelFile: File by option("--model", "-m").file().required()
+    private val modelFile: File by option("--model", "-m", help = "File containing learnt model.").file().required()
 
     private val hair: Boolean? by option("--hair").flag(default = false)
     private val feathers: Boolean? by option("--feathers").flag(default = false)

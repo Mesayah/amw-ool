@@ -8,5 +8,7 @@ include(
     "messaging:consumer",
     "messaging:publisher",
     "reactive",
-    "classification"
+    "ml-common",
+    "classification",
+    "regression"
 )

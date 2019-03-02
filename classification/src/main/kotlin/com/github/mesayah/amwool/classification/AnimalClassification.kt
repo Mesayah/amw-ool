@@ -8,5 +8,5 @@ val logger: Logger = Logger.getGlobal()
 
 fun main(args: Array<String>) = object : CliktCommand() {
     override fun run() = Unit
-}.subcommands(Classification, LearnCommand)
+}.subcommands(Classification, LearnClassificationCommand)
     .main(args)

@@ -25,7 +25,8 @@ subprojects {
         implementation(kotlin("stdlib-jdk8"))
         
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1")
-        
+        implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.21")
+
         implementation("com.github.ajalt:clikt:1.6.0")
 
         testImplementation(kotlin("test"))

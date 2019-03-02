@@ -1,93 +1,62 @@
 package com.github.mesayah.amwool.classification
 
-import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.options.required
-import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.int
+import com.github.mesayah.amwool.mlcommon.LearnCommand
 import weka.attributeSelection.AttributeSelection
 import weka.attributeSelection.InfoGainAttributeEval
 import weka.attributeSelection.Ranker
-import weka.classifiers.trees.J48
+import weka.classifiers.Classifier
+import weka.classifiers.functions.LinearRegression
 import weka.core.Attribute
 import weka.core.Instances
-import weka.core.SerializationHelper
-import weka.core.converters.ConverterUtils
-import java.io.File
-import java.io.IOException
+import weka.core.converters.CSVLoader
+import weka.core.converters.Loader
+import weka.filters.Filter
+import weka.filters.unsupervised.attribute.Remove
 
-object LearnCommand : CliktCommand(name = "learn", help = "Use training data set to teach program") {
-    private val dataFile by option(
-        names = *arrayOf("--data", "-d"),
-        help = "Path to file containing learning data"
-    ).file().required()
-
+object LearnClassificationCommand : LearnCommand() {
     private val attributeLimit by option(
         names = *arrayOf("-a", "--attributes"),
         help = "Number of the most important attributes to use, 0 for no limit"
     ).int().default(0)
 
-    private val outputFile by option(
-        names = *arrayOf("-f", "--file"),
-        help = "File name for saving model"
-    ).file()
-
-    override fun run() {
-        val filteredDataInstances = removeAnimalNameAttribute(loadDataInstances(dataFile.path))
-        val mostImportantAttributesIndices = selectMostImportantAttributes(filteredDataInstances)
-        val dataInstances = limitAttributes(mostImportantAttributesIndices, filteredDataInstances, attributeLimit)
-        val tree = buildTree(dataInstances)
-        outputFile?.let { tree.saveTo(it) }
-    }
+    override val classifier: Classifier = LinearRegression()
+    override val dataLoader: Loader = CSVLoader()
+    override fun Instances.prepareData() = prepareDataForClassification(attributeLimit)
 }
 
-private fun J48.saveTo(outputFile: File) = {
-    try {
-        SerializationHelper.write(outputFile.path, this)
-        logger.info("Saved model to file ${outputFile.path}.")
-    } catch (ioException: IOException) {
-        throw IOException("Could not save model to file.", ioException)
-    }
+fun Instances.prepareDataForClassification(attributeLimit: Int) = this.apply {
+    removeAnimalNameAttribute()
+        .limitAttributes(selectMostImportantAttributes(), attributeLimit)
 }
 
-
-private fun limitAttributes(
+fun Instances.limitAttributes(
     mostImportantAttributes: List<Attribute>,
-    dataInstances: Instances,
     attributeLimit: Int
-): Instances = dataInstances.apply {
+): Instances = with(Remove()) {
     mostImportantAttributes
-        .take(attributeLimit)
-        .forEach { deleteAttributeAt(it.index()) }
-}
+        .filter { attribute -> attribute != this@limitAttributes.classAttribute() }
+        .drop(attributeLimit)
+        .map(Attribute::index)
+        .toIntArray()
+        .let { setAttributeIndicesArray(it) }
+    setInputFormat(this@limitAttributes)
+    Filter.useFilter(this@limitAttributes, this)
+}.apply { logger.info("Removed not important attributes, ${numAttributes()} left, counting class attribute") }
 
-
-fun buildTree(filteredDataInstances: Instances): J48 = J48().apply {
-    options = arrayOf("-U")
-    buildClassifier(filteredDataInstances)
-    logger.info("Built tree: $this.")
-}
-
-fun selectMostImportantAttributes(dataInstances: Instances): List<Attribute> = with(AttributeSelection()) {
+fun Instances.selectMostImportantAttributes(): List<Attribute> = with(AttributeSelection()) {
     apply {
         setEvaluator(InfoGainAttributeEval())
         setSearch(Ranker())
-        SelectAttributes(dataInstances)
+        SelectAttributes(this@selectMostImportantAttributes)
     }
     selectedAttributes()
-        .map { dataInstances.attribute(it) }
-        .apply { logger.info("Selected the most important attributes: ${map { Attribute::name }}.") }
+        .map { this@selectMostImportantAttributes.attribute(it) }
+        .apply { logger.info("Selected the most important attributes: $this") }
 }
 
-fun removeAnimalNameAttribute(dataInstances: Instances): Instances = dataInstances.apply {
+fun Instances.removeAnimalNameAttribute(): Instances = this.apply {
     deleteAttributeAt(0)
-}
-
-
-fun loadDataInstances(dataFileName: String): Instances = with(ConverterUtils.DataSource(dataFileName)) {
-    if (dataSet == null) throw IOException("Data could not be loaded.")
-    dataSet.apply {
-        logger.info("${this.numInstances()} data instances loaded.")
-    }
 }
