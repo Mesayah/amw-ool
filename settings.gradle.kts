@@ -10,5 +10,6 @@ include(
     "reactive",
     "ml-common",
     "classification",
-    "regression"
+    "regression",
+    "clustering"
 )

@@ -14,7 +14,7 @@ fun main(args: Array<String>) = Consume().main(args)
 class Consume : CliktCommand() {
     val host: String by option(help = "RabbitMQ host").default("localhost")
     val port: Int by option(help = "RabbitMQ port").int().default(5672)
-    val queue: String by option(help = "RabbitMQ queue name").required()
+    val queue: String by option(help = "RabbitMQ queue name").default("default-queue")
 
     override fun run() {
         try {

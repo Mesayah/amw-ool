@@ -9,9 +9,8 @@ import weka.core.converters.Loader
 
 fun main(args: Array<String>) = RegressionLearningCommand().main(args)
 
-class RegressionLearningCommand : AbstractLearnCommand() {
-    override val classifier: Classifier = LinearRegression()
-
+class RegressionLearningCommand : AbstractLearnCommand<LinearRegression>() {
+    override val model: LinearRegression = LinearRegression()
     override fun Instances.prepareData() = prepareDataForRegression()
 }
 

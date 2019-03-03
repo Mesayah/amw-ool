@@ -8,21 +8,20 @@ import weka.attributeSelection.AttributeSelection
 import weka.attributeSelection.InfoGainAttributeEval
 import weka.attributeSelection.Ranker
 import weka.classifiers.Classifier
-import weka.classifiers.functions.LinearRegression
+import weka.classifiers.trees.J48
 import weka.core.Attribute
 import weka.core.Instances
-import weka.core.converters.CSVLoader
-import weka.core.converters.Loader
 import weka.filters.Filter
 import weka.filters.unsupervised.attribute.Remove
 
-object LearnClassificationCommand : AbstractLearnCommand() {
+
+object LearnClassificationCommand : AbstractLearnCommand<J48>() {
     private val attributeLimit by option(
         names = *arrayOf("-a", "--attributes"),
         help = "Number of the most important attributes to use, 0 for no limit"
     ).int().default(0)
 
-    override val classifier: Classifier = LinearRegression()
+    override val model = J48()
     override fun Instances.prepareData() = prepareDataForClassification(attributeLimit)
 }
 

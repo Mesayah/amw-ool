@@ -7,13 +7,9 @@ import org.junit.Test
 import weka.classifiers.Classifier
 import weka.classifiers.trees.J48
 import weka.core.Instances
-import weka.core.converters.ArffLoader
-import weka.core.converters.ConverterUtils
-import weka.core.converters.Loader
-import java.io.IOException
 
 class ClassificationLearningTest : AbstractLearningTest() {
-    override val classifierSupplier: () -> Classifier = { J48() }
+    override val modelSupplier: () -> Classifier = { J48() }
     override val dataResourceFileName: String = "zoo.arff"
     override fun Instances.prepareData(): Instances = prepareDataForClassification(10)
 
@@ -43,9 +39,10 @@ class ClassificationLearningTest : AbstractLearningTest() {
 
     @Test
     fun shouldBuildTreeWithoutErrorForExampleData() {
-        val data = getTestDataFile().loadDataInstances().removeAnimalNameAttribute()
-        data.setClassIndex(data.numAttributes() - 1)
-        data.buildModel(classifierSupplier.invoke())
+        val data = getTestDataFile().loadDataInstances().removeAnimalNameAttribute().apply {
+            setClassIndex(numAttributes() - 1)
+        }
+        modelSupplier.invoke().buildModel(data)
     }
 
     @Test

@@ -7,6 +7,6 @@ import weka.core.Instances
 
 class RegressionLearningTest : AbstractLearningTest() {
     override fun Instances.prepareData(): Instances = prepareDataForRegression()
-    override val classifierSupplier: () -> Classifier = { LinearRegression() }
+    override val modelSupplier: () -> Classifier = { LinearRegression() }
     override val dataResourceFileName: String = "data.csv"
 }

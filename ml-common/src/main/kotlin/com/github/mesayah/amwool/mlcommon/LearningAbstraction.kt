@@ -5,7 +5,10 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
 import weka.classifiers.Classifier
-import weka.classifiers.evaluation.Evaluation
+import weka.classifiers.Evaluation
+import weka.clusterers.ClusterEvaluation
+import weka.clusterers.Clusterer
+import weka.clusterers.DensityBasedClusterer
 import weka.core.Instances
 import weka.core.SerializationHelper
 import weka.core.converters.ConverterUtils
@@ -16,7 +19,8 @@ import java.util.logging.Logger
 
 val logger = Logger.getGlobal()
 
-abstract class AbstractLearnCommand :
+
+abstract class AbstractLearnCommand<T> :
     CliktCommand(name = "learn", help = "Provide learning data to teach the program") {
 
     private val dataFile by option(
@@ -29,17 +33,23 @@ abstract class AbstractLearnCommand :
         help = "File name for saving model"
     ).file()
 
-    abstract val classifier: Classifier
+    abstract val model: T
     abstract fun Instances.prepareData(): Instances
 
     override fun run() {
         try {
             with(dataFile.loadDataInstances()) data@{
                 prepareData()
-                    .buildModel(classifier).apply {
-                        evaluate(this@data)
-                        outputFile?.let { this.saveTo(it) }
+                model.buildModel(this).apply {
+                    evaluate(this@data)
+                    outputFile?.let {
+                        try {
+                            logger.info("Saved model to file ${outputFile!!.path}")
+                        } catch (ioException: IOException) {
+                            throw IOException("Could not save model to file", ioException)
+                        }
                     }
+                }
             }
         } catch (e: Exception) {
             logger.severe("${e.localizedMessage}: ${e.cause?.localizedMessage}")
@@ -47,25 +57,42 @@ abstract class AbstractLearnCommand :
     }
 }
 
-fun Classifier.saveTo(outputFile: File) = outputFile.apply {
-    try {
-        SerializationHelper.write(outputFile.path, this@saveTo)
-        logger.info("Saved model to file ${outputFile.path}")
-    } catch (ioException: IOException) {
-        throw IOException("Could not saveTo model to file", ioException)
-    }
+fun <T> T.saveTo(file: File) = file.apply {
+    SerializationHelper.write(this.path, this@saveTo)
 }
 
-fun Classifier.evaluate(evaluationData: Instances) = Evaluation(evaluationData)
-    .apply {
-        crossValidateModel(this@evaluate, evaluationData, 10, Random(1))
-        logger.info(toSummaryString("Evaluation", true))
+fun <T> T.buildModel(instances: Instances): T =
+    when (this) {
+        is Classifier -> {
+            buildClassifier(instances)
+            this
+        }
+        is Clusterer -> {
+            buildClusterer(instances)
+            this
+        }
+        else -> throw java.lang.IllegalStateException("Model building is not handled")
     }
 
-fun Instances.buildModel(classifier: Classifier) = classifier
-    .apply {
-        buildClassifier(this@buildModel)
+private fun <T> T.evaluate(instances: Instances) =
+    when (this) {
+        is Classifier -> Evaluation(instances).apply {
+            crossValidateModel(
+                this@evaluate,
+                instances,
+                10,
+                Random(1)
+            )
+        }.apply { logger.info(toSummaryString()) }
+        is DensityBasedClusterer -> ClusterEvaluation.crossValidateModel(
+            this,
+            instances,
+            10,
+            Random(1)
+        ).apply { logger.info("$this") }
+        else -> throw IllegalStateException("Evaluation is not handled")
     }
+
 
 fun File.loadDataInstances(): Instances {
     try {
