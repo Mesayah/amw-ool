@@ -3,7 +3,7 @@ package com.github.mesayah.amwool.classification
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
-import com.github.mesayah.amwool.mlcommon.LearnCommand
+import com.github.mesayah.amwool.mlcommon.AbstractLearnCommand
 import weka.attributeSelection.AttributeSelection
 import weka.attributeSelection.InfoGainAttributeEval
 import weka.attributeSelection.Ranker
@@ -16,7 +16,7 @@ import weka.core.converters.Loader
 import weka.filters.Filter
 import weka.filters.unsupervised.attribute.Remove
 
-object LearnClassificationCommand : LearnCommand() {
+object LearnClassificationCommand : AbstractLearnCommand() {
     private val attributeLimit by option(
         names = *arrayOf("-a", "--attributes"),
         help = "Number of the most important attributes to use, 0 for no limit"
@@ -28,6 +28,7 @@ object LearnClassificationCommand : LearnCommand() {
 }
 
 fun Instances.prepareDataForClassification(attributeLimit: Int) = this.apply {
+    setClassIndex(numAttributes() - 1)
     removeAnimalNameAttribute()
         .limitAttributes(selectMostImportantAttributes(), attributeLimit)
 }

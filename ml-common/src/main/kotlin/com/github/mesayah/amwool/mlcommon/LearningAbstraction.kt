@@ -16,7 +16,7 @@ import java.util.logging.Logger
 
 val logger = Logger.getGlobal()
 
-abstract class LearnCommand : CliktCommand(name = "learn", help = "Provide learning data to teach the program") {
+abstract class AbstractLearnCommand : CliktCommand(name = "learn", help = "Provide learning data to teach the program") {
 
     private val dataFile by option(
         names = *arrayOf("--data", "-d"),

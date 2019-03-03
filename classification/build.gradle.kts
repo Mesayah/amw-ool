@@ -8,6 +8,7 @@ plugins {
 dependencies {
     compile("nz.ac.waikato.cms.weka:weka-stable:3.8.3")
     compile(project(":ml-common"))
+    testImplementation(project(path = ":ml-common", configuration = "testArchives"))
 }
 
 application {

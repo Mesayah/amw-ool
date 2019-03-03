@@ -9,7 +9,7 @@ import weka.core.converters.Loader
 
 class RegressionLearningTest : AbstractLearningTest() {
     override fun Instances.prepareData(): Instances = prepareDataForRegression()
-    override val loader: () -> Loader = { CSVLoader() }
-    override val classifier: () -> Classifier = { LinearRegression() }
+    override val loaderSupplier: () -> Loader = { CSVLoader() }
+    override val classifierSupplier: () -> Classifier = { LinearRegression() }
     override val dataResourceFileName: String = "data.csv"
 }
