@@ -2,23 +2,24 @@ package com.github.mesayah.amwool.classification
 
 import com.github.mesayah.amwool.mlcommon.AbstractLearningTest
 import com.github.mesayah.amwool.mlcommon.buildModel
+import com.github.mesayah.amwool.mlcommon.loadDataInstances
 import org.junit.Test
 import weka.classifiers.Classifier
 import weka.classifiers.trees.J48
 import weka.core.Instances
 import weka.core.converters.ArffLoader
+import weka.core.converters.ConverterUtils
 import weka.core.converters.Loader
 import java.io.IOException
 
 class ClassificationLearningTest : AbstractLearningTest() {
-    override val loaderSupplier: () -> Loader = { ArffLoader() }
     override val classifierSupplier: () -> Classifier = { J48() }
     override val dataResourceFileName: String = "zoo.arff"
     override fun Instances.prepareData(): Instances = prepareDataForClassification(10)
 
     @Test
     fun shouldReturnExistingIndicesWhenSelectedMostImportantAttributes() {
-        val dataInstances = loadTestDataInstances()
+        val dataInstances = getTestDataFile().loadDataInstances()
 
         val mostImportantAttributeIndices = dataInstances.selectMostImportantAttributes()
 
@@ -29,7 +30,7 @@ class ClassificationLearningTest : AbstractLearningTest() {
 
     @Test
     fun shouldNotContainNameAttributeAfterRemovingIt() {
-        val dataInstances = loadTestDataInstances()
+        val dataInstances = getTestDataFile().loadDataInstances()
 
         val dataWithRemovedNameAttribute = dataInstances.removeAnimalNameAttribute()
 
@@ -42,14 +43,14 @@ class ClassificationLearningTest : AbstractLearningTest() {
 
     @Test
     fun shouldBuildTreeWithoutErrorForExampleData() {
-        val data = loadTestDataInstances().removeAnimalNameAttribute()
+        val data = getTestDataFile().loadDataInstances().removeAnimalNameAttribute()
         data.setClassIndex(data.numAttributes() - 1)
         data.buildModel(classifierSupplier.invoke())
     }
 
     @Test
     fun shouldLoadedDataHaveProperFormatWhenLoadingIt() {
-        val dataInstances = loadTestDataInstances()
+        val dataInstances = getTestDataFile().loadDataInstances()
 
         val aardvark = dataInstances[0]
         assert(aardvark.stringValue(0) == "aardvark")

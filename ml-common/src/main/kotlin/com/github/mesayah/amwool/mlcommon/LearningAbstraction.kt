@@ -8,7 +8,7 @@ import weka.classifiers.Classifier
 import weka.classifiers.evaluation.Evaluation
 import weka.core.Instances
 import weka.core.SerializationHelper
-import weka.core.converters.Loader
+import weka.core.converters.ConverterUtils
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -16,7 +16,8 @@ import java.util.logging.Logger
 
 val logger = Logger.getGlobal()
 
-abstract class AbstractLearnCommand : CliktCommand(name = "learn", help = "Provide learning data to teach the program") {
+abstract class AbstractLearnCommand :
+    CliktCommand(name = "learn", help = "Provide learning data to teach the program") {
 
     private val dataFile by option(
         names = *arrayOf("--data", "-d"),
@@ -29,19 +30,18 @@ abstract class AbstractLearnCommand : CliktCommand(name = "learn", help = "Provi
     ).file()
 
     abstract val classifier: Classifier
-    abstract val dataLoader: Loader
     abstract fun Instances.prepareData(): Instances
 
     override fun run() {
         try {
-            with(dataFile.loadDataInstances(dataLoader)) data@{
+            with(dataFile.loadDataInstances()) data@{
                 prepareData()
                     .buildModel(classifier).apply {
                         evaluate(this@data)
                         outputFile?.let { this.saveTo(it) }
                     }
             }
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             logger.severe("${e.localizedMessage}: ${e.cause?.localizedMessage}")
         }
     }
@@ -67,10 +67,17 @@ fun Instances.buildModel(classifier: Classifier) = classifier
         buildClassifier(this@buildModel)
     }
 
-fun File.loadDataInstances(loader: Loader): Instances = with(loader) {
-    setSource(this@loadDataInstances)
-    if (dataSet == null) throw IOException("Data could not be loaded")
-    dataSet.apply {
-        logger.info("${this.numInstances()} data instances loaded")
+fun File.loadDataInstances(): Instances {
+    try {
+        return with(ConverterUtils.DataSource(path)) {
+            if (dataSet == null) throw IOException("Data could not be loaded")
+            dataSet.apply {
+                logger.info("${this.numInstances()} data instances loaded")
+            }
+        }
+    } catch (illegalArgumentExc: IllegalArgumentException) {
+        throw IllegalArgumentException("Invalid file or file format", illegalArgumentExc)
     }
 }
+
+

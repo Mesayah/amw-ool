@@ -11,7 +11,6 @@ fun main(args: Array<String>) = RegressionLearningCommand().main(args)
 
 class RegressionLearningCommand : AbstractLearnCommand() {
     override val classifier: Classifier = LinearRegression()
-    override val dataLoader: Loader = CSVLoader()
 
     override fun Instances.prepareData() = prepareDataForRegression()
 }

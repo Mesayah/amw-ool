@@ -23,7 +23,6 @@ object LearnClassificationCommand : AbstractLearnCommand() {
     ).int().default(0)
 
     override val classifier: Classifier = LinearRegression()
-    override val dataLoader: Loader = CSVLoader()
     override fun Instances.prepareData() = prepareDataForClassification(attributeLimit)
 }
 
