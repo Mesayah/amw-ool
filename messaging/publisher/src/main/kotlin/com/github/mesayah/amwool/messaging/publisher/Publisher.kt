@@ -4,11 +4,8 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.int
 import com.rabbitmq.client.ConnectionFactory
-import com.rabbitmq.client.DeliverCallback
-import com.rabbitmq.client.Delivery
 
 fun main(args: Array<String>) = Publish().main(args)
 
@@ -24,8 +21,8 @@ class Publish : CliktCommand() {
                 host = this@Publish.host
                 port = this@Publish.port
 
-                newConnection()
-                    .createChannel().apply {
+                with(newConnection()) {
+                    createChannel().apply {
                         queueDeclare(queue, false, false, false, null)
                         basicPublish(
                             "",
@@ -33,16 +30,14 @@ class Publish : CliktCommand() {
                             null,
                             message.toByteArray()
                         )
-                        println("Send message \"$message\"")
+                        println("Sent message \"$message\"")
+                        close()
                     }
+                    close()
+                }
             }
         } catch (exception: Exception) {
             println("ERROR: ${exception.localizedMessage}")
         }
-    }
-}
-
-object MessageDeliverCallback : DeliverCallback {
-    override fun handle(consumerTag: String?, message: Delivery?) {
     }
 }

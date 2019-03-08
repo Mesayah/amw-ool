@@ -37,8 +37,3 @@ class Consume : CliktCommand() {
         }
     }
 }
-
-object MessageDeliverCallback : DeliverCallback {
-    override fun handle(consumerTag: String?, message: Delivery?) {
-    }
-}

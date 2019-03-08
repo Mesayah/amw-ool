@@ -5,6 +5,9 @@
 ## Build & Installation
     ./gradlew clean build installDist
 
+## Help & Execution Parameters
+The following command execute programs with default parameters. To specify your own see help for each program (`--help` or `-h`).
+
 ## Concurrent Processing
 The program executes network action (downloading data) and dependant computing (n-th Fibonacci element) both synchronously and asynchronously.
 
@@ -45,9 +48,14 @@ Launch Consumer application.
     
 Launch Publisher application providing message content.
 
-    messaging/publisher/build/install/publisher/bin/publisher <message>
+    messaging/publisher/build/install/publisher/bin/publisher "hello world"
     
 Verify if Consumer received the message.
+To close Consumer press `Ctrl+C`.
+
+    docker container rm some-rabbit
+
+Remove created Docker container.
     
 ## Reactive Streams
 The program consists of reactive pipeline composed to encrypt or decrypt provided data.
