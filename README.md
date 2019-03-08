@@ -6,7 +6,7 @@
     ./gradlew clean build installDist
 
 ## Help & Execution Parameters
-The following command execute programs with default parameters. To specify your own see help for each program (`--help` or `-h`).
+The following commands execute programs with default parameters. To specify your own see help for each program (`--help` or `-h`).
 
 ## Concurrent Processing
 The program executes network action (downloading data) and dependant computing (n-th Fibonacci element) both synchronously and asynchronously.
@@ -53,10 +53,10 @@ Launch Publisher application providing message content.
 Verify if Consumer received the message.
 To close Consumer press `Ctrl+C`.
 
+Remove created Docker container.
+
     docker container rm some-rabbit
 
-Remove created Docker container.
-    
 ## Reactive Streams
 The program consists of reactive pipeline composed to encrypt or decrypt provided data.
 
@@ -68,13 +68,11 @@ The program loads data of 101 animals and constructs decision tree to classify n
 
     classification/build/install/classification/bin/classification learn -d zoo.arff
 
-## Regresja
-Aplikacja pobiera dane charakteryzujące zestaw budynków..
+## Linear Regression
 
     regression/build/install/regression/bin/regression learn -d data.csv
 
-## Klastrowanie
-Aplikacja tworzy klastry dla danych bankowych.
+## Clustering
 
     clustering/build/install/clustering/bin/clustering -d bank-data.arff
 
