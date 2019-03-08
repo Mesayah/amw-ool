@@ -12,5 +12,5 @@ dependencies {
 }
 
 application {
-    mainClassName = "com.github.mesayah.amwool.concurrency.ConcurrencyKt"
+    mainClassName = "com.github.mesayah.amwool.concurrency.SyncAsyncComparisonKt"
 }
