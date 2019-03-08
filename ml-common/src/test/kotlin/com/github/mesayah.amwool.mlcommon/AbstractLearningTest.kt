@@ -11,17 +11,17 @@ abstract class AbstractLearningTest<T> {
     abstract val modelSupplier: () -> T
     abstract val dataResourceFileName: String
 
-    abstract val prepareTypeclassSupplier: () -> Prepare<T>
+    abstract val prepareDataTypeclassSupplier: () -> PrepareData<T>
     abstract val learnTypeclassSupplier: () -> Learn<T>
     abstract val saveTypeclassSupplier: () -> Save<T>
     abstract val preapareParametersSupplier: () -> Array<Any>
 
     @Test
     fun shouldBuildModelWithTestDataWithoutException() {
-        val data = prepareTypeclassSupplier.invoke().run {
+        val data = prepareDataTypeclassSupplier.invoke().run {
             getTestDataFile()
                 .loadDataInstances()
-                .prepare(*preapareParametersSupplier.invoke())
+                .prepare()
         }
 
         learnTypeclassSupplier.invoke().run {
@@ -31,10 +31,10 @@ abstract class AbstractLearningTest<T> {
 
     @Test
     fun shouldFileExistsAfterSavingModel() {
-        val model = prepareTypeclassSupplier.invoke().run {
+        val model = prepareDataTypeclassSupplier.invoke().run {
             getTestDataFile()
                 .loadDataInstances()
-                .prepare(*preapareParametersSupplier.invoke())
+                .prepare()
         }.let {
             learnTypeclassSupplier.invoke().run {
                 modelSupplier.invoke().buildModel(it)
@@ -52,10 +52,10 @@ abstract class AbstractLearningTest<T> {
 
     @Test
     fun shouldFileContainModelAfterSavingIt() {
-        val model = prepareTypeclassSupplier.invoke().run {
+        val model = prepareDataTypeclassSupplier.invoke().run {
             getTestDataFile()
                 .loadDataInstances()
-                .prepare(*preapareParametersSupplier.invoke())
+                .prepare()
         }.let {
             learnTypeclassSupplier.invoke().run {
                 modelSupplier.invoke().buildModel(it)

@@ -15,8 +15,8 @@ import java.util.logging.Logger
 
 private val logger = Logger.getGlobal()
 
-interface Prepare<T> {
-    fun Instances.prepare(vararg parameters: Any): Instances
+interface PrepareData<T> {
+    fun Instances.prepare(): Instances
 }
 
 /**
@@ -65,17 +65,16 @@ abstract class AbstractLearnCommand<T> :
         help = "File name for saving model"
     ).file()
 
-    abstract val prepareTypeclass: Prepare<T>
+    abstract val prepareDataTypeclass: PrepareData<T>
     abstract val learnTypeclass: Learn<T>
     abstract val saveTypeclass: Save<T>
     abstract val model: T
-    abstract val prepareParameters: Array<Any>
 
     override fun run() {
         try {
             val data = dataFile.loadDataInstances()
                 .apply {
-                    prepareTypeclass.run { this@apply.prepare(prepareParameters) }
+                    prepareDataTypeclass.run { this@apply.prepare() }
                 }
 
             learnTypeclass

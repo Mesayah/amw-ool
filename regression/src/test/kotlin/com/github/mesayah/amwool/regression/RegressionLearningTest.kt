@@ -4,7 +4,7 @@ import com.github.mesayah.amwool.mlcommon.*
 import weka.classifiers.functions.LinearRegression
 
 class RegressionLearningTest : AbstractLearningTest<LinearRegression>() {
-    override val prepareTypeclassSupplier: () -> Prepare<LinearRegression> = { PrepareForLinearRegression() }
+    override val prepareDataTypeclassSupplier: () -> PrepareData<LinearRegression> = { PrepareDataForLinearRegression() }
     override val learnTypeclassSupplier: () -> Learn<LinearRegression> = { ClassifierLearn() }
     override val saveTypeclassSupplier: () -> Save<LinearRegression> = { Save() }
     override val preapareParametersSupplier: () -> Array<Any> = { emptyArray() }

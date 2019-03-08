@@ -63,11 +63,14 @@ abstract class AbstractEvaluateCommand<T, R> :
     ).file().required()
 
     abstract val evaluateTypeclass: Evaluate<T, R>
+    abstract val prepareDataTypeclass: PrepareData<T>
     val model: T by lazy { SerializationHelper.read(modelFile.path) as T }
 
     override fun run() {
         try {
-            val data = dataFile.loadDataInstances()
+            val data = prepareDataTypeclass.run {
+                dataFile.loadDataInstances().prepare()
+            }
 
             evaluateTypeclass
                 .run {

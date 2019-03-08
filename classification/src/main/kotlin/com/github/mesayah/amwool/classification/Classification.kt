@@ -7,14 +7,11 @@ import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.int
 import weka.classifiers.trees.J48
-import weka.core.DenseInstance
-import weka.core.Instance
-import weka.core.SerializationHelper
+import weka.core.*
 import java.io.File
 import java.io.IOException
 
-object ClassifyCommand : CliktCommand(name = "regress", help = "Provide data to regress it") {
-
+object ClassifyCommand : CliktCommand(name = "classify", help = "Provide data to regress it") {
     private val modelFile: File by option("--model", "-m", help = "File containing learnt model.").file().required()
 
     private val hair: Boolean? by option("--hair").flag(default = false)
@@ -29,7 +26,7 @@ object ClassifyCommand : CliktCommand(name = "regress", help = "Provide data to 
     private val breathes: Boolean? by option("--breathes").flag(default = false)
     private val venomous: Boolean? by option("--venomous").flag(default = false)
     private val fins: Boolean? by option("--fins").flag(default = false)
-    private val legs: Int? by option("--legs").int()
+    private val legs: Int? by option("--legs").int().required()
     private val tail: Boolean? by option("--tail").flag(default = false)
     private val domestic: Boolean? by option("--domestic").flag(default = false)
     private val catsize: Boolean? by option("--catsize").flag(default = false)
@@ -55,8 +52,32 @@ object ClassifyCommand : CliktCommand(name = "regress", help = "Provide data to 
             catsize
         )
         val instance = buildDataInstance(dataValues)
-        val classificationResult = tree.classifyInstance(instance)
-        println("Result: ${instance.classAttribute().value(classificationResult.toInt())}")
+        val instances = Instances(
+            "Dataset", arrayListOf(
+                Attribute("hair"),
+                Attribute("feathers"),
+                Attribute("eggs"),
+                Attribute("milk"),
+                Attribute("airborne"),
+                Attribute("aquatic"),
+                Attribute("predator"),
+                Attribute("toothed"),
+                Attribute("backbone"),
+                Attribute("breathes"),
+                Attribute("venomous"),
+                Attribute("fins"),
+                Attribute("legs"),
+                Attribute("tail"),
+                Attribute("domestic"),
+                Attribute("catsize"),
+                Attribute("type")
+            ), 0
+        ).apply {
+            setClassIndex(numAttributes() - 1)
+            add(instance)
+        }
+        val classificationResult = tree.classifyInstance(instances.firstInstance())
+        println("Result: ${instances.classAttribute().value(classificationResult.toInt())}")
     }
 }
 

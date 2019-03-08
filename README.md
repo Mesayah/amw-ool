@@ -66,13 +66,35 @@ The program consists of reactive pipeline composed to encrypt or decrypt provide
 ## Classification
 The program loads data of 101 animals and constructs decision tree to classify new data sets.
 
-    classification/build/install/classification/bin/classification learn -d zoo.arff
+Learn and save model to file.
+
+    classification/build/install/classification/bin/classification learn -d zoo.arff -f tree.model
+
+Evaluate saved model.
+
+    classification/build/install/classification/bin/classification evaluate -d zoo.arff -m tree.model
+    
+You can also classify new data. You can do that by executing `classify` command providing new data values.
+To get a list of possible values execute `classify` with `-h` flag.
+
+    classification/build/install/classification/bin/classification classify -m tree.model ...
 
 ## Linear Regression
+Learning
 
-    regression/build/install/regression/bin/regression learn -d data.csv
+    regression/build/install/regression/bin/regression learn -d data.csv -f regression.model
+
+Evaluation
+
+    regression/build/install/regression/bin/regression evaluate -d data.csv -m regression.model
 
 ## Clustering
 
-    clustering/build/install/clustering/bin/clustering -d bank-data.arff
+Learning
+
+    clustering/build/install/clustering/bin/clustering learn -d bank-data.arff -f clustering.model
+    
+Evaluation
+    
+    clustering/build/install/clustering/bin/clustering evaluate -d bank-data.arff -m clustering.model
 

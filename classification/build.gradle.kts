@@ -12,5 +12,5 @@ dependencies {
 }
 
 application {
-    mainClassName = "com.github.mesayah.amwool.classification.AnimalClassificationKt"
+    mainClassName = "com.github.mesayah.amwool.classification.MainCommandKt"
 }

@@ -5,7 +5,7 @@ import org.junit.Test
 import weka.classifiers.trees.J48
 
 class ClassificationLearningTest : AbstractLearningTest<J48>() {
-    override val prepareTypeclassSupplier: () -> Prepare<J48> = { PrepareForTree() }
+    override val prepareDataTypeclassSupplier: () -> PrepareData<J48> = { PrepareDataForTreeClassification() }
     override val preapareParametersSupplier: () -> Array<Any> = { arrayOf(0) }
     override val learnTypeclassSupplier: () -> Learn<J48> = { ClassifierLearn() }
     override val saveTypeclassSupplier: () -> Save<J48> = { Save() }
@@ -16,7 +16,7 @@ class ClassificationLearningTest : AbstractLearningTest<J48>() {
     fun shouldReturnExistingIndicesWhenSelectedMostImportantAttributes() {
         val dataInstances = getTestDataFile().loadDataInstances()
 
-        val mostImportantAttributeIndices = PrepareForTree().run {
+        val mostImportantAttributeIndices = PrepareDataForTreeClassification().run {
             dataInstances.selectMostImportantAttributes()
         }
 
@@ -29,7 +29,7 @@ class ClassificationLearningTest : AbstractLearningTest<J48>() {
     fun shouldNotContainNameAttributeAfterRemovingIt() {
         val dataInstances = getTestDataFile().loadDataInstances()
 
-        val dataWithRemovedNameAttribute = PrepareForTree().run {
+        val dataWithRemovedNameAttribute = PrepareDataForTreeClassification().run {
             dataInstances.removeAnimalNameAttribute()
         }
 
@@ -42,7 +42,7 @@ class ClassificationLearningTest : AbstractLearningTest<J48>() {
 
     @Test
     fun shouldBuildTreeWithoutErrorForExampleData() {
-        val data = PrepareForTree().run {
+        val data = PrepareDataForTreeClassification().run {
             getTestDataFile().loadDataInstances().removeAnimalNameAttribute().apply {
                 setClassIndex(numAttributes() - 1)
             }

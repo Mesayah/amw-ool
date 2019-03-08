@@ -1,26 +1,24 @@
 package com.github.mesayah.amwool.clustering
 
-import com.github.mesayah.amwool.mlcommon.AbstractLearnCommand
-import com.github.mesayah.amwool.mlcommon.Learn
-import com.github.mesayah.amwool.mlcommon.Prepare
-import com.github.mesayah.amwool.mlcommon.Save
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.subcommands
+import com.github.mesayah.amwool.mlcommon.*
+import weka.clusterers.Clusterer
+import weka.clusterers.DensityBasedClusterer
 import weka.clusterers.EM
 import weka.core.Instances
 
-fun main(args: Array<String>) = ClusteringLearningCommand().main(args)
+fun main(args: Array<String>) = object : CliktCommand() {
+    override fun run() = Unit
+}.subcommands(ClusteringLearningCommand, ClusteringEvaluateCommand).main(args)
 
-class ClusteringLearningCommand : AbstractLearnCommand<EM>() {
-    override val prepareTypeclass: Prepare<EM> = PrepareForClustering()
-    override val learnTypeclass: Learn<EM> = LearnClusterer()
-    override val saveTypeclass: Save<EM> = Save()
-    override val prepareParameters: Array<Any> = emptyArray()
+object ClusteringLearningCommand : AbstractLearnCommand<DensityBasedClusterer>() {
+    override val prepareDataTypeclass: PrepareData<DensityBasedClusterer> = PrepareDataForClustering()
+    override val learnTypeclass: Learn<DensityBasedClusterer> = ClustererLearn()
+    override val saveTypeclass: Save<DensityBasedClusterer> = Save()
     override val model: EM = EM()
 }
 
-class LearnClusterer : Learn<EM> {
-    override fun EM.buildModel(data: Instances): EM = apply { buildClusterer(data) }
-}
-
-class PrepareForClustering : Prepare<EM> {
-    override fun Instances.prepare(vararg parameters: Any): Instances = this
+class PrepareDataForClustering : PrepareData<DensityBasedClusterer> {
+    override fun Instances.prepare(): Instances = this
 }

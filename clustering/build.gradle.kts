@@ -12,6 +12,6 @@ dependencies {
 }
 
 application {
-    mainClassName = "com.github.mesayah.amwool.regression.ClusteringKt"
+    mainClassName = "com.github.mesayah.amwool.clustering.LearningKt"
 }
     
