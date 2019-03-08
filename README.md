@@ -55,3 +55,14 @@ Aplikacja skłąda się z reaktywnego pipeline skomponowanego w celu szyfrowania
 Aplikacja pobiera dane 101 zwierząt i buduje drzewo decyzyjne w celu klasyfikcji nowych zestawów danych.
 
     classification/build/install/classification/bin/classification learn -d zoo.arff
+
+## Regresja
+Aplikacja pobiera dane charakteryzujące zestaw budynków..
+
+    regression/build/install/regression/bin/regression learn -d data.csv
+
+## Klastrowanie
+Aplikacja tworzy klastry dla danych bankowych.
+
+    clustering/build/install/clustering/bin/clustering -d bank-data.arff
+

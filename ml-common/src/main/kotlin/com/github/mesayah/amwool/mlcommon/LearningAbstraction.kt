@@ -5,21 +5,53 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
 import weka.classifiers.Classifier
-import weka.classifiers.Evaluation
-import weka.clusterers.ClusterEvaluation
 import weka.clusterers.Clusterer
-import weka.clusterers.DensityBasedClusterer
 import weka.core.Instances
 import weka.core.SerializationHelper
 import weka.core.converters.ConverterUtils
 import java.io.File
 import java.io.IOException
-import java.util.*
 import java.util.logging.Logger
 
-val logger = Logger.getGlobal()
+private val logger = Logger.getGlobal()
 
+interface Prepare<T> {
+    fun Instances.prepare(vararg parameters: Any): Instances
+}
 
+/**
+ * Type class defining learning functionality for all machine learning models.
+ */
+interface Learn<T> {
+    fun T.buildModel(data: Instances): T
+}
+
+/**
+ * [Learn] implementation for [Classifier]s.
+ */
+class ClassifierLearn<T : Classifier> : Learn<T> {
+    override fun T.buildModel(data: Instances): T = this.apply { buildClassifier(data) }
+}
+
+/**
+ * [Learn] implementation for [Clusterer]s.
+ */
+class ClustererLearn<T : Clusterer> : Learn<T> {
+    override fun T.buildModel(data: Instances): T = apply { buildClusterer(data) }
+}
+
+/**
+ * Type class for model serialization and saving to file.
+ */
+class Save<T> {
+    fun T.saveTo(file: File) = file.apply {
+        SerializationHelper.write(path, this@saveTo)
+    }
+}
+
+/**
+ * Abstraction for model learning CLI command.
+ */
 abstract class AbstractLearnCommand<T> :
     CliktCommand(name = "learn", help = "Provide learning data to teach the program") {
 
@@ -33,22 +65,28 @@ abstract class AbstractLearnCommand<T> :
         help = "File name for saving model"
     ).file()
 
+    abstract val prepareTypeclass: Prepare<T>
+    abstract val learnTypeclass: Learn<T>
+    abstract val saveTypeclass: Save<T>
     abstract val model: T
-    abstract fun Instances.prepareData(): Instances
+    abstract val prepareParameters: Array<Any>
 
     override fun run() {
         try {
-            with(dataFile.loadDataInstances()) data@{
-                prepareData()
-                model.buildModel(this).apply {
-                    evaluate(this@data)
-                    outputFile?.let {
-                        try {
-                            logger.info("Saved model to file ${outputFile!!.path}")
-                        } catch (ioException: IOException) {
-                            throw IOException("Could not save model to file", ioException)
-                        }
-                    }
+            val data = dataFile.loadDataInstances()
+                .apply {
+                    prepareTypeclass.run { this@apply.prepare(prepareParameters) }
+                }
+
+            learnTypeclass
+                .run { model.buildModel(data) }
+
+            outputFile?.let {
+                try {
+                    saveTypeclass.run { model.saveTo(it) }
+                    print("Saved model to file ${outputFile!!.path}")
+                } catch (ioException: IOException) {
+                    throw IOException("Could not save model to file", ioException)
                 }
             }
         } catch (e: Exception) {
@@ -57,49 +95,13 @@ abstract class AbstractLearnCommand<T> :
     }
 }
 
-fun <T> T.saveTo(file: File) = file.apply {
-    SerializationHelper.write(this.path, this@saveTo)
-}
-
-fun <T> T.buildModel(instances: Instances): T =
-    when (this) {
-        is Classifier -> {
-            buildClassifier(instances)
-            this
-        }
-        is Clusterer -> {
-            buildClusterer(instances)
-            this
-        }
-        else -> throw java.lang.IllegalStateException("Model building is not handled")
-    }
-
-private fun <T> T.evaluate(instances: Instances) =
-    when (this) {
-        is Classifier -> Evaluation(instances).apply {
-            crossValidateModel(
-                this@evaluate,
-                instances,
-                10,
-                Random(1)
-            )
-        }.apply { logger.info(toSummaryString()) }
-        is DensityBasedClusterer -> ClusterEvaluation.crossValidateModel(
-            this,
-            instances,
-            10,
-            Random(1)
-        ).apply { logger.info("$this") }
-        else -> throw IllegalStateException("Evaluation is not handled")
-    }
-
-
 fun File.loadDataInstances(): Instances {
+    print("Loading data instances from file ${this.path}...")
     try {
         return with(ConverterUtils.DataSource(path)) {
             if (dataSet == null) throw IOException("Data could not be loaded")
             dataSet.apply {
-                logger.info("${this.numInstances()} data instances loaded")
+                print("${this.numInstances()} data instances loaded")
             }
         }
     } catch (illegalArgumentExc: IllegalArgumentException) {

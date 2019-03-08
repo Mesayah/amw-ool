@@ -11,5 +11,5 @@ dependencies {
 }
 
 application {
-    mainClassName = "com.github.mesayah.amwool.concurrency.ReactiveKt"
+    mainClassName = "com.github.mesayah.amwool.reactive.ReactiveCipherKt"
 }

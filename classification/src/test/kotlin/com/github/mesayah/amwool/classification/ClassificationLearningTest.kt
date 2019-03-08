@@ -1,23 +1,24 @@
 package com.github.mesayah.amwool.classification
 
-import com.github.mesayah.amwool.mlcommon.AbstractLearningTest
-import com.github.mesayah.amwool.mlcommon.buildModel
-import com.github.mesayah.amwool.mlcommon.loadDataInstances
+import com.github.mesayah.amwool.mlcommon.*
 import org.junit.Test
-import weka.classifiers.Classifier
 import weka.classifiers.trees.J48
-import weka.core.Instances
 
-class ClassificationLearningTest : AbstractLearningTest() {
-    override val modelSupplier: () -> Classifier = { J48() }
+class ClassificationLearningTest : AbstractLearningTest<J48>() {
+    override val prepareTypeclassSupplier: () -> Prepare<J48> = { PrepareForTree() }
+    override val preapareParametersSupplier: () -> Array<Any> = { arrayOf(0) }
+    override val learnTypeclassSupplier: () -> Learn<J48> = { ClassifierLearn() }
+    override val saveTypeclassSupplier: () -> Save<J48> = { Save() }
+    override val modelSupplier: () -> J48 = { J48() }
     override val dataResourceFileName: String = "zoo.arff"
-    override fun Instances.prepareData(): Instances = prepareDataForClassification(10)
 
     @Test
     fun shouldReturnExistingIndicesWhenSelectedMostImportantAttributes() {
         val dataInstances = getTestDataFile().loadDataInstances()
 
-        val mostImportantAttributeIndices = dataInstances.selectMostImportantAttributes()
+        val mostImportantAttributeIndices = PrepareForTree().run {
+            dataInstances.selectMostImportantAttributes()
+        }
 
         mostImportantAttributeIndices.forEach {
             assert(dataInstances.attribute(it.name()) != null)
@@ -28,7 +29,9 @@ class ClassificationLearningTest : AbstractLearningTest() {
     fun shouldNotContainNameAttributeAfterRemovingIt() {
         val dataInstances = getTestDataFile().loadDataInstances()
 
-        val dataWithRemovedNameAttribute = dataInstances.removeAnimalNameAttribute()
+        val dataWithRemovedNameAttribute = PrepareForTree().run {
+            dataInstances.removeAnimalNameAttribute()
+        }
 
         assert(dataWithRemovedNameAttribute[0]
             .enumerateAttributes()
@@ -39,10 +42,15 @@ class ClassificationLearningTest : AbstractLearningTest() {
 
     @Test
     fun shouldBuildTreeWithoutErrorForExampleData() {
-        val data = getTestDataFile().loadDataInstances().removeAnimalNameAttribute().apply {
-            setClassIndex(numAttributes() - 1)
+        val data = PrepareForTree().run {
+            getTestDataFile().loadDataInstances().removeAnimalNameAttribute().apply {
+                setClassIndex(numAttributes() - 1)
+            }
         }
-        modelSupplier.invoke().buildModel(data)
+
+        ClassifierLearn<J48>().run {
+            modelSupplier.invoke().buildModel(data)
+        }
     }
 
     @Test
