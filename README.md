@@ -58,9 +58,9 @@ Remove created Docker container.
     docker container rm some-rabbit
 
 ## Reactive Streams
-The program consists of reactive pipeline composed to encrypt or decrypt provided data.
+The program consists of reactive pipeline composed to rename provided files.
 
-    Still in progress...
+    reactive/build/install/reactive/bin/reactive --prefix reactive --suffix streams reactive/build/resources/main/*
 
 # Machine Learning
 ## Classification
