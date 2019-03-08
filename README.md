@@ -1,58 +1,62 @@
-# Programowanie równoległe i rozproszone
-## Wymagania
-* Java Runtime Environment 8 lub wyższa
+# Concurrent & Distributed Programming
+## Requirements
+* Java Runtime Environment 8 or higher
 
-## Budowanie & Instalacja
+## Build & Installation
     ./gradlew clean build installDist
 
-## Przetwarzanie współbieżne
-    concurrency/build/install/concurrency/bin/concurrency
-W pierwszym przypadku operacje blokujące wątek takie jak pobieranie danych z sieci są wykonywane szybciej podczas 
-przetwarzania współbieżnego. W przypadku operacji zależnych od wyników poprzedzających jak np. w przypadku obliczania 
-elementów ciągu Fibbonaciego, przetwarzanie asynchroniczne jest wolniejsze, gdyż overhead z tytułu tworzenia i 
-uruchamiania wątku jest większy niż zysk z przetwarzania współbieżnego danych operacji.
+## Concurrent Processing
+The program executes network action (downloading data) and dependant computing (n-th Fibonacci element) both synchronously and asynchronously.
 
-## Synchronizacja
+    concurrency/build/install/concurrency/bin/concurrency
+
+In the first case blocking operations such as data downloading are executed faster when processed asynchronously. In case of dependant operations such as computing Fibonacci sequence elements, the asynchronous processing is slower due to thread creation overhead which is bigger than profit from concurrent processing of these operations.
+
+## Synchronization
+The program concurrently executes counter incrementation with and without thread synchronization.
+
      synchronization/build/install/synchronization/bin/synchronization
-Po wykonaniu bez synchronizacji licznik (`counter`) nigdy nie pownien wynosić 10000 (oczekiwana wartość) na procesorze 
-z wieloma rdzeniami.
+
+When executed without synchronization the counter never reaches expected value (10000) if executed on multicore procesor.
 
 ## WebScraping
-Program pobiera treść ze strony Wikipedii o wskazanym haśle.
+The program downloads content of a given Wikipedia page.
 
     webscraping/build/install/webscraping/bin/webscraping <wiki keyword>
-gdzie `<wiki keyword>` jest szukanym hasłem, np.
+    
+where `<wiki keyword>` is searched keyword, eg.
 
-    webscraping/build/install/webscraping/bin/webscraping Polska
-wyszuka strone o tytule "Polska" i wyświetli jej treść.
+    webscraping/build/install/webscraping/bin/webscraping Poland
+    
+will search for "Poland" wiki page and print its content.
 
 ## Messaging
-Program wykorzystuje RabbitMQ do asynchronicznego przesyłania wiadomośći.
-Składa się z dwóch małych aplikacji: Consumera oraz Publishera.
-Do poprawnego działania wymaga instancji RabbitMQ, którą można uruchomić np. w kontenerze Dockera.
+The program uses RabbitMQ for asynchronous message sending.
+It's composed of two separate applications: Consumer and Publisher.
+It needs an instance of RabbitMQ, which you can launch in a Docker container.
 
-Uruchom RabbitMQ w Dockerze
+Launch RabbitMQ Docker container.
 
     docker run -d --hostname my-rabbit --name some-rabbit -p 5672:5672 rabbitmq:3
 
-Uruchom aplikację Consumer
+Launch Consumer application.
 
     messaging/consumer/build/install/consumer/bin/consumer
     
-Uruchom aplikację Publisher podając treść wiadomości do wysłania
+Launch Publisher application providing message content.
 
     messaging/publisher/build/install/publisher/bin/publisher <message>
     
-Zweryfikuj odebranie odpowiedzi w aplikacji Consumer.
+Verify if Consumer received the message.
     
 ## Reactive Streams
-Aplikacja skłąda się z reaktywnego pipeline skomponowanego w celu szyfrowania przetworzonych danych.
+The program consists of reactive pipeline composed to encrypt or decrypt provided data.
 
-    Wciąż w budowie...
+    Still in progress...
 
 # Machine Learning
-## Klasyfikacja
-Aplikacja pobiera dane 101 zwierząt i buduje drzewo decyzyjne w celu klasyfikcji nowych zestawów danych.
+## Classification
+The program loads data of 101 animals and constructs decision tree to classify new data sets.
 
     classification/build/install/classification/bin/classification learn -d zoo.arff
 
