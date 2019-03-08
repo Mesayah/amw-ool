@@ -10,5 +10,5 @@ plugins {
 }
 
 application {
-    mainClassName = "com.github.mesayah.amwool.webscraping.WikiScrapperKt"
+    mainClassName = "com.github.mesayah.amwool.webscraping.WikiScraperKt"
 }

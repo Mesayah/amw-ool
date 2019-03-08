@@ -20,15 +20,15 @@ The program concurrently executes counter incrementation with and without thread
 When executed without synchronization the counter never reaches expected value (10000) if executed on multicore procesor.
 
 ## WebScraping
-The program downloads content of a given Wikipedia page.
+The program downloads content of a given Wikipedia page (only Polish).
 
     webscraping/build/install/webscraping/bin/webscraping <wiki keyword>
     
 where `<wiki keyword>` is searched keyword, eg.
 
-    webscraping/build/install/webscraping/bin/webscraping Poland
+    webscraping/build/install/webscraping/bin/webscraping Polska
     
-will search for "Poland" wiki page and print its content.
+will search for "Polska" (eng. "Poland") wiki page and print its content.
 
 ## Messaging
 The program uses RabbitMQ for asynchronous message sending.
